@@ -1,0 +1,40 @@
+\documentclass[oneside]{book}
+\author{The OpenSSL Project}
+\title{The OpenSSL Guide}
+
+\usepackage{color}
+\usepackage{colortbl}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\newcommand\todo[1]{\textcolor{red}{[TODO:#1]}}
+\definecolor{LightGray}{gray}{0.9}
+\lstdefinestyle{osslc}{
+  breaklines=true,
+  frame=single,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  numbers=left,
+  numberstyle=\tiny,
+  captionpos=b
+}
+
+\begin{document}
+\lstset{style=osslc}
+\maketitle
+\tableofcontents
+
+\part{Introduction}
+
+\include{introduction/about/about}
+
+\part{OpenSSL on the Command Line}
+
+\part{SSL/TLS/DTLS Application Programming}
+
+\part{Cryptography Application Programming}
+
+\end{document}

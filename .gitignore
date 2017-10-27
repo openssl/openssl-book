@@ -1,0 +1,8 @@
+#PDF, aux and log files
+*.pdf
+*.log
+*.aux
+
+#Top level auto-generated files
+openssl-book.out
+openssl-book.toc
