@@ -1,0 +1,42 @@
+Copyright 2017 The OpenSSL Project Authors. All Rights Reserved.
+
+Overview
+========
+
+The OpenSSL Guide is an attempt to create better documentation for the OpenSSL
+Toolkit. Until now the following types of documentation exist:
+
+1) Man pages
+2) Wiki
+
+The man pages are a reference guide and useful for looking up the specific usage
+of a particular command or function. The wiki is a an unreviewed community
+resource which may contain content on a wide range of subjects. Typically this
+content is relatively short and focussed on a particular subject area. The wiki
+is intended to have a relatively low barrier of entry to encourage community
+collaboration.
+
+This book is intended to fill a "gap" in this documentation, i.e. to provide a
+definitive, trusted source of introductory and "guide" style material that will
+enable a reader who is unfamiliar with OpenSSL to learn more about it. It will
+contain content that should enable the reader to get to a level of familiarity
+with OpenSSL that they can then use the other documentation sources (such as the
+man pages) to find detailed information as required.
+
+NOTE: This is a very initial draft and there is no content in the guide yet!
+
+Building the OpenSSL Guide
+==========================
+
+The following prerequisites are needed in order to build the guide:
+
+- TeX Live
+- gcc
+- make
+
+Assuming you have all of the above installed on your system, then creating the
+guide is simply a matter of typing "make" from the command line:
+
+ $ make
+
+ The output should be "openssl-book.pdf".
