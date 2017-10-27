@@ -1,0 +1,10 @@
+To report a problem with this guide please open an issue on GitHub.
+
+To submit a minor patch to this guide please open a pull request on GitHub. Note
+that we do not accept merge commits; You will be asked to remove them before a
+patch is considered acceptable.
+
+To contribute significant content (e.g. a new chapter) you should also open a
+pull request on GitHub. However please discuss the outline of your chapter
+content on the openssl-dev email list before starting work (see
+https://mta.openssl.org for details).
