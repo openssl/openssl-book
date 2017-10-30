@@ -8,6 +8,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{outline}
 \newcommand\todo[1]{\textcolor{red}{[TODO:#1]}}
 \definecolor{LightGray}{gray}{0.9}
 \lstdefinestyle{osslc}{
@@ -27,14 +28,259 @@
 \maketitle
 \tableofcontents
 
-\part{Introduction}
+\part{Foundations}
 
-\include{introduction/about/about}
+\chapter{Outline - to be deleted}
 
-\part{OpenSSL on the Command Line}
+\begin{outline}
+  \item{Part: Foundations}
+  \begin{outline}
+    \item{Chapter: Introduction}
+    \begin{outline}
+        \item{Purpose of this book}
+        \item{Layout and how to navigate this book}
+        \item{This is an open source book}
+        \item{About the authors}
+    \end{outline}
+    \item{Chapter: About OpenSSL}
+    \begin{outline}
+      \item{What is OpenSSL}
+      \begin{outline}
+        \item{Describe OpenSSL as a command line tool}
+        \item{Describe OpenSSL as a SSL/TLS/DTLS library}
+        \item{Describe OpenSSL as a crypto library}
+      \end{outline}
+      \item{OpenSSL History}
+      \begin{outline}
+        \item{SSLeay}
+        \item{OpenSSL formation}
+        \item{Key releases, e.g. 0.9.x, 1.0.0, 1.1.0 etc}
+        \item{Heartbleed}
+        \item{OpenSSL today}
+      \end{outline}
+    \end{outline}
+    \item{Chapter: Getting OpenSSL}
+    \begin{outline}
+      \item{OpenSSL Version Numbering}
+      \item{Using pre-built binaries}
+      \item{Pre-requisites for building OpenSSL from source}
+      \item{Compiling and installing from source}
+      \item{Troubleshooting some common build issues}
+    \end{outline}
+    \item{Chapter: Programming Fundamentals}
+    \begin{outline}
+      \item{Memory management}
+      \begin{outline}
+        \item{new and free functions}
+        \item{OPENSSL\_malloc, OPENSSL\_zalloc and OPENSSL\_free}
+        \item{get0, get1, set0, set1 etc}
+        \item{Debugging memory issues}
+      \end{outline}
+      \item{BIOs}
+      \item{Serialisation and De-serialisation}
+      \begin{outline}
+        \item{i2d and d2i functions}
+      \end{outline}
+      \item{Stacks}
+      \item{LHashes}
+      \item{NIDs}
+      \item{Identifying the OpenSSL version}
+      \item{Automatic Library Initialisation and De-initialisation}
+      \item{Threads}
+    \end{outline}
+    \item{Chapter: Certificates and Certificate Authorities}
+    \item{Chapter: Working with Certificate and Key files}
+    \begin{outline}
+      \item{PEM files}
+      \item{PKCS8 files}
+      \item{PCKS12 files}
+    \end{outline}
+    \item{Chapter: Certificate Revocation}
+    \begin{outline}
+      \item{CRLs}
+      \item{OCSP}
+    \end{outline}
+    \item{Chapter: Configuration via CONF}
+    \item{Chapter: Engines (Advanced Topic)}
+    \item{Chapter: Stores (Advanced Topic)}
+    \item{Chapter: Advanced Certificates (Advanced Topic)}
+    \item{Chapter: Certificate Transparency (Advanced Topic)}
+    \item{Chapter: Asynchronous operation (Advanced Topic)}
+    \item{Chapter: ASN.1 (Advanced Topic)}
+    \item{Chapter: UIs (Advanced Topic)}
+  \end{outline}
+  \item{Part: SSL/TLS/DTLS}
+  \begin{outline}
+    \item{Chapter: Understanding SSL/TLS}
+    \begin{outline}
+      \item{Security properties of an SSL/TLS connection}
+      \item{Overview of SSL/TLS versions}
+      \item{Overview of establishing identity}
+      \item{Overview of ciphersuites}
+      \item{Records}
+      \item{Overview of the Handshake}
+      \item{Sessions and resumption}
+    \end{outline}
+    \item{Chapter: Getting Started}
+    \begin{outline}
+      \item{Creating an SSL\_CTX}
+      \item{Creating a self-signed certificate}
+      \item{Starting the test server}
+      \item{A simple client}
+      \begin{outline}
+        \item{Connecting}
+        \item{Exchanging data}
+        \item{Shutting down}
+      \end{outline}
+      \item{Compilation}
+      \item{Running the client}
+      \item{Adding the trusted CAs}
+      \item{A simple server}
+      \begin{outline}
+        \item{Setting up the SSL\_CTX}
+        \item{Accepting incoming connections}
+      \end{outline}
+    \end{outline}
+    \item{Chapter: Ciphersuites}
+    \begin{outline}
+      \item{Parts of the Ciphersuite}
+      \item{Ciphersuite Naming}
+      \item{TLSv1.3 Ciphersuites}
+      \item{Configuring the available Ciphersuites}
+      \item{Ciphersuite selection (client vs server preference)}
+      \item{Key Exchange Mechanisms}
+      \begin{outline}
+        \item{RSA}
+        \item{DHE}
+        \item{ECDHE (covering some basics of curve types: P-256, X25519 etc)}
+        \item{SRP}
+        \item{PSK}
+      \end{outline}
+      \item{Authentication}
+      \begin{outline}
+        \item{RSA}
+        \item{ECDSA}
+        \item{EdDSA? (future)}
+      \end{outline}
+      \item{Encryption}
+      \begin{outline}
+        \item{AES}
+        \item{Camellia}
+        \item{ChaCha}
+        \item{etc}
+      \end{outline}
+      \item{MAC/AEAD}
+    \end{outline}
+    \item{Chapter: Basic Operation}
+    \begin{outline}
+      \item{The read and write BIOs}
+      \item{Alerts}
+      \item{Version Negotiation}
+      \item{SSL\_read, SSL\_write and SSL\_get\_error}
+      \begin{outline}
+        \item{Non-blocking IO}
+        \item{Pending data}
+      \end{outline}
+      \item{Shutting down}
+      \item{Client Authentication}
+      \item{Renegotiation}
+      \item{Compression}
+      \item{SSL BIO}
+      \item{Exporting secrets}
+    \end{outline}
+    \item{Chapter: Sessions}
+    \begin{outline}
+      \item{Resumption handshakes}
+      \item{Simple sessions and session files}
+      \item{Session tickets}
+      \item{Session caches}
+    \end{outline}
+    \item{Chapter: Configuration}
+    \begin{outline}
+      \item{Setting options and modes}
+      \begin{outline}
+        \item{Some common options/modes}
+        \begin{outline}
+          \item{SSL\_MODE\_AUTO\_RETRY}
+          \item{SSL\_MODE\_RELEASE\_BUFFERS}
+        \end{outline}
+      \end{outline}
+      \item{Signature Algorithms}
+      \item{Supported Groups}
+      \item{Configuration using SSL\_CONF}
+      \item{Security levels and the security callbacks}
+    \end{outline}
+    \item{Chapter: DTLS}
+    \begin{outline}
+      \item{Key differences with TLS}
+      \item{Transports}
+      \begin{outline}
+        \item{UDP}
+        \item{SCTP}
+        \item{MTU issues}
+      \end{outline}
+      \item{Retransmissions and the DTLS timer}
+      \item{Listening for connections and cookies}
+    \end{outline}
+    \item{Chapter: TLSv1.3}
+    \item{Chapter: Debugging Connection Failures}
+    \item{Chapter: Advanced Extensions (Advanced Topic)}
+    \begin{outline}
+      \item{SNI}
+      \item{ALPN and NPN}
+      \item{SRTP}
+      \item{EC point formats}
+      \item{Extended Master Secret}
+      \item{Encrypt-Then-MAC}
+      \item{OCSP in SSL/TLS}
+      \item{Certificate Transparency in SSL/TLS}
+      \item{Custom extensions}
+    \end{outline}
+    \item{Chapter: DANE (Advanced Topic)}
+    \item{Chapter: Optimisation (Advanced Topic)}
+    \begin{outline}
+      \item{Multiblock}
+      \item{Async}
+      \item{Pipelining}
+      \item{Fragment sizes}
+      \item{Read ahead}
+    \end{outline}
+  \end{outline}
+  \item{Part: Cryptography}
+  \begin{outline}
+    \item{Chapter: Working with BIGNUMs}
+    \item{Chapter: Random Numbers}
+    \item{Chapter: Encryption and Decryption (Symmetric)}
+    \begin{outline}
+      \item{What is symmetric encryption}
+      \item{Block and stream ciphers}
+      \item{Modes}
+      \item{IVs and Nonces}
+      \item{A simple encryption/decryption example}
+      \item{AEAD}
+      \begin{outline}
+        \item{Tags}
+        \item{GCM}
+        \item{OCB}
+        \item{CCM}
+        \item{ChaCha20-Poly1305}
+      \end{outline}
+      \item{XTS}
+    \end{outline}
+    \item{Chapter: Asymmetric encryption and decryption}
+    \item{Chapter: Digital signatures}
+    \item{Chapter: Hashes}
+    \item{Chapter: Message Authentication Codes}
+    \item{Chapter: Key Generation and Derivation}
+    \item{Chapter: CMS (PKCS.7) and S/MIME (Advanced Topic)}
+    \item{Chapter: Elliptic Curves (Advanced Topic)}
+  \end{outline}
+\end{outline}
 
-\part{SSL/TLS/DTLS Application Programming}
+\include{foundations/about/about}
 
-\part{Cryptography Application Programming}
+\part{SSL/TLS/DTLS}
+
+\part{Cryptography}
 
 \end{document}
