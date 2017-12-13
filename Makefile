@@ -11,7 +11,8 @@ EXE=
 
 BOOKELEMS= openssl-book.tex
 
-all: openssl-book.pdf
+all: openssl-book.pdf \
+	tls/understand-tls/understand-tls.tex
 
 $(EXE): %: %.c
 	$(CC) -o $@ $< $(CFLAGS)
