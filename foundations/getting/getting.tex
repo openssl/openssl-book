@@ -1,0 +1,498 @@
+\chapter{Getting OpenSSL}
+\label{chp:getting-openssl}
+
+There are multiple ways to get hold of OpenSSL. This chapter will cover
+how to compile and install OpenSSL from source, as well as discuss various
+options for obtaining OpenSSL in pre-built binary form.
+
+\section{Understanding OpenSSL version numbers}
+
+The OpenSSL project (\url{https://www.openssl.org}) develops and
+maintains the OpenSSL source code. The project stores all of the source
+code in a source code control system known as git. Periodically the
+project will generate a new \emph{release}. This is a snapshot of the source
+code at a given point in time that is collected together into a single archive
+file and made available for download.
+
+At any one time there may be multiple versions of OpenSSL that are receiving
+support by the project team. Support in this context means that bugs are
+fixed and security issues are investigated, reported and fixed as appropriate.
+
+For example OpenSSL 1.1.0 and OpenSSL 1.0.2 are two versions of OpenSSL. Each
+version of OpenSSL may have multiple releases associated with it. These are
+identified by a letter after the version number. The very first release for
+a version has no letter. For example the first release for OpenSSL 1.1.0 has
+the version number 1.1.0, the second one is 1.1.0a, the third one is 1.1.0b,
+and so on. The letter releases contain bug and security fixes for the given
+OpenSSL version (but never new features). To ensure that you always have the
+latest fixes you should always try to use the latest letter release that is
+available for the OpenSSL version that you are using. Letter releases for a
+version are always fully backward compatible.
+
+Versions of OpenSSL which have the same first two numbers are backwards source
+and binary compatible with each other\footnote{This only applies if both versions
+have been compiled with the same options}. For example 1.0.2 is backwards
+source and binary compatible with 1.0.1 and 1.0.0. This means upgrading from
+one of these versions to a later one should simply be a matter of upgrading the
+library itself. No recompilation of application binaries using OpenSSL should be
+necessary. If recompilation of applications is done then they should continue to
+work as before. New features will typically have been added if the third number
+has been increased.
+
+Versions of OpenSSL which change the middle number are not backwards source or
+binary compatible with each other. For example 1.1.0 is not fully backwards
+source or binary compatible with 1.0.2. The changes required to upgrade an
+application that works with 1.0.2 for 1.1.0 are relatively small and straight
+forward though.
+
+The OpenSSL project has not defined what it means if the first number changes,
+but we should assume that this would signal some very significant change. The
+project has no current plans for a version that changes this number.
+
+OpenSSL versions are supported for a given period of time. Some OpenSSL versions
+are designated as Long Term Support (LTS) versions. Non-LTS versions are supported
+for 2 years. LTS versions are supported for 5 years. During the final year of
+any support period the version only receives security fixes (but not bug fixes).
+OpenSSL 1.0.2 is an LTS release.
+
+Note that it is usually possible to have multiple versions of OpenSSL installed on
+the same system at the same time.
+
+New applications that are being developed to use OpenSSL should typically use the
+latest version of OpenSSL available. This guide describes the use of OpenSSL 1.1.x
+(where "x" is any number). It does not describe how to use OpenSSL 1.0.2 (or earlier)
+which has a number of differences.
+
+In addition to the main OpenSSL versions the OpenSSL project also distributes the
+OpenSSL FIPS module. This is a US government certified cryptography module that
+works in conjunction with the main OpenSSL library. Most users \emph{should not} use
+the FIPS module. If you \emph{must} use it then you should carefully read the notes
+about FIPS on the OpenSSL project website,
+\url{https://www.openssl.org/docs/fipsnotes.html}.
+
+\section{Using a Pre-Built OpenSSL Binary}
+
+The OpenSSL Project does not distribute pre-built binaries, only source code.
+Nevertheless there are a number of third parties that distribute pre-built
+versions of OpenSSL. The project does not officially endorse any third party
+distribution although it does maintain a page linking to some of them. The main
+advantage of using a pre-built binary version is that it is typically much
+easier and quicker to install in this way.
+
+If you are using OpenSSL on Linux then it is almost always possible to obtain
+OpenSSL from the package manager for your distribution.  If the binary comes
+from a package manager, then usually the package maintainer will backport any
+security fixes to the package and you will get the latest security fixes by
+simply installing the latest updates. Often the package maintainer will apply
+distribution specific patches to the code in order to make it work more
+effectively with that distribution. This may mean that attempting to use a
+source compiled version of OpenSSL in conjunction with system binaries designed
+to work with the system specific pre-built version may not always work as
+expected. Often the OpenSSL files may be split across multiple packages. For
+example, on Debian systems, the command line OpenSSL tools are in the
+``openssl'' package, the header files required for developing your own
+applications are in the ``libssl-dev'' package, and the documentation is in the
+``libssl-doc'' package.
+
+The disadvantage of using a pre-built binary is that you have no control over
+the build process itself. Therefore you will not be able to configure the build
+specifically for your needs (for example in order to enable non-default options).
+Additionally the pre-built binary version for your platform may not be the
+latest available version with the latest features and/or the latest
+(non-security) bug fixes. If you use a source version though you will need to
+make sure you keep it regularly updated with any security fixes that might be
+released from time to time.
+
+It is usually possible to have more than one version of OpenSSL installed at the
+same time. For example it is common to use the platform specific binary version
+for built-in system binaries, but also have a source compiled version for use by
+your own custom application.
+
+There are a number of pre-built binaries available for Windows and other
+platforms. The project maintains a list of these here:
+
+\url{https://wiki.openssl.org/index.php/Binaries}
+
+\section{Prerequisites for compiling OpenSSL from source} \label{sec:getting-prereq}
+
+In order to compile OpenSSL you will need to ensure that you have a suitable set of
+tools. All compilation typically takes place from the command line for your platform.
+
+\subsection{C Compiler}
+
+Firstly you will need a C compiler. Almost any modern C compiler should be suitable for
+this. Common ones that are used include gcc and clang. On Linux most distributions will
+provide a suitable package to install this through your package manager. On Debian
+based systems you can use this:
+
+\todo{Validate the various Debian/RedHat instructions on a fresh install}
+
+\begin{verbatim}
+$ sudo apt-get install build-essential
+\end{verbatim}
+
+On a RedHat based system you could use:
+
+\begin{verbatim}
+$ sudo yum install gcc
+\end{verbatim}
+
+On the Windows platform there are two primary options for a C compiler. Either you can
+use Microsoft's C compiler (as distributed with VisualStudio) or you can use the MinGW
+gcc compiler. If you are going to use the compiler provided with VisualStudio then you
+will still need to compile from the command line. VisualStudio provides the ability to
+start a Developer Command Prompt, which sets up various environment variables to
+correctly use the command line build tools. Start the version of the Developer
+Command Prompt that matches the architecture for the platform you are targetting. For
+example if you want to build 32-bit OpenSSL then ensure that you start the 32-bit
+Developer Command Prompt. Similarly if you want 64-bit OpenSSL then start the 64-bit
+version.
+
+If you plan to use the MinGW compiler then you should install MSYS2. This includes
+packages for the the MinGW compiler in it \url{http://www.msys2.org}. Make sure you read the
+MSYS2 introduction page at \url{https://github.com/msys2/msys2/wiki/MSYS2-introduction}
+and follow the instructions for setting up MSYS2 with access to the correct compilers.
+After installing MSYS2 with the correct compilers then, if you want to build 32-bit
+OpenSSL, start the MinGW-w64 32-bit Shell or, to build 64-bit OpenSSL, start the
+MinGW-w64 64-bit Shell.
+
+\subsection{Perl} \label{sec:getting-prereq-perl}
+
+Perl is used by multiple scripts within the OpenSSL build system. You will need perl
+version 5.10.0 or later. On Linux you should install this through your package manager.
+You can check the version of Perl that you have by running the following command:
+
+\begin{verbatim}
+$ perl -version
+\end{verbatim}
+
+Be careful to install the correct perl packages. OpenSSL uses a number of core perl
+modules. Full details are in the file NOTES.PERL available in the top level directory
+of the source code archive. On Debian based systems installing the "perl" package
+should give you everything you need. On RedHat based systems install the "perl-core"
+package.
+
+On Windows you should use a version of perl appropriate to your build environment. If
+you are using MSYS2 then you should use the MSYS2 perl package. From the MSYS2 shell
+type:
+
+\begin{verbatim}
+$ pacman -S perl
+\end{verbatim}
+
+If you are using VisualStudio then select a suitable Windows Perl package such as
+ ActiveState's Perl \url{https://www.activestate.com/activeperl} or Strawberry Perl
+\url{http://strawberryperl.com/}. Download the appropriate file from the website and
+run the installer package. Ensure that the Perl executable location is included in
+the \%PATH\% environment variable.
+
+Do not use the wrong perl version for a build environment. For example attempting to
+use ActiveState Perl from MSYS2 or MSYS2 Perl from the VisualStudio developer prompt
+will fail. All of these Windows Perl packages should come with the correct perl modules.
+
+\subsection{Assembler, make and other build tools} \label{sec:getting-prereq-assem}
+
+On Linux you will need a collection of other basic build tools (such as ``GNU as'',
+``ld'', ``ar'' etc). These are distributed as part of the GNU binutils package
+which can be installed as follows for Debian based systems:
+
+\begin{verbatim}
+$ sudo apt-get install binutils
+\end{verbatim}
+
+Or like this on RedHat based systems:
+
+\begin{verbatim}
+$ sudo yum install binutils
+\end{verbatim}
+
+On Linux you will also need ``make''. If you installed the ``build-essential''
+package on Debian based systems to get your compiler then this will also install
+make. On RedHat based systems you can install it as follows:
+
+\begin{verbatim}
+$ sudo yum install make
+\end{verbatim}
+
+On Windows everything you need should be included in your MSYS or VisualStudio
+environment with the exception of an assembler. You will need to download and
+install the NASM assembler for this (\url{http://www.nasm.us/}). Select the
+appropriate Windows installer for dowload and then run it. Ensure that the
+NASM executable location is included in your \%PATH\% environment variable. Note
+that the Microsoft Assembler that comes with VisualStudio is not supported for
+building OpenSSL.
+
+\section{Compiling and Installing from source}
+
+You can obtain the currently supported versions of OpenSSL from the download page at
+\url{https://www.openssl.org/source}. Older versions are also available via a link
+from that page.
+
+Click on the link for the version you want to install in order to download an archive
+file containing all of the relevant source code. The download archive is in ".tar.gz"
+format. Many common archive/compression tools are able to read this format. Select a
+suitable tool for your platform and uncompress and extract the files in the archive
+into a suitable directory. For example on Linux you might type the following:
+
+\begin{verbatim}
+$ tar xvf openssl-1.1.0f.tar.gz
+\end{verbatim}
+
+Note that this guide only provides instructions for building OpenSSL 1.1.x (where
+``x'' is any number). Other versions will need to be built differently.
+
+\subsection{Configuring the OpenSSL build}
+
+OpenSSL uses a perl script called \verb!Configure! to initialse the source directory
+ready for building. This script is in the top-level directory of the source code
+tree. Its primary function is to create the Makefile required for your specific
+platform and build options.
+
+In its simplest form it takes a single argument - an identifier (known as a
+target) specific to your platform. For example to build for 64-bit Windows using
+VisualStudio you would use the \verb!VC-WIN64A! target:
+
+\begin{verbatim}
+$ perl Configure VC-WIN64A
+\end{verbatim}
+
+Some common targets are listed in table \ref{tab:configure-targets}.
+
+\begin{table}[tb]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{LightGray}
+Target & Description \\
+\hline
+linux-x86\_64 & 64-bit Linux for the x86 architecture \\
+\hline
+linux-x86 & 32-bit Linux for the x86 architecture \\
+\hline
+mingw & 32-bit MSYS2 Windows \\
+\hline
+mingw64 & 64-bit MSYS2 Windows \\
+\hline
+VC-WIN32 & 32-bit VisualStudio Windows \\
+\hline
+VC-WIN64A & 64-bit VisualStudio Windows \\
+\hline
+\end{tabular}
+\caption{Common targets for Configure}
+\label{tab:configure-targets}
+\end{table}
+
+A full list of all available targets can be obtained by invoking \verb!Configure!
+with no arguments:
+
+\begin{verbatim}
+$ perl Configure
+\end{verbatim}
+
+On many Linux/Unix platforms it is possible to auto-detect the correct target
+platform. To do this you can use the provided shell script \verb!config!:
+
+\begin{verbatim}
+$ ./config
+\end{verbatim}
+
+This will attempt to work out the correct target platform and then invoke
+\verb!Configure! accordingly. This may not work on all platforms but should be fine
+on most popular ones.
+
+The \verb!Configure! script can take a number of options which enable you to
+customise the build. List the options you wish to use on the command line after
+\verb!Configure!. For example to build with debugging symbols without any support
+for deprecated APIs, you can use the following:
+
+\begin{verbatim}
+$ perl Configure --debug no-deprecated linux-x86_64
+\end{verbatim}
+
+Any options provided to the \verb!config! script will be passed down to the underlying
+call to Configure so this also works:
+
+\begin{verbatim}
+$ ./config --debug no-deprecated
+\end{verbatim}
+
+A complete list of the supported options for Configure and a description of what
+they do is available in the ``INSTALL'' file in the top level source directory.
+
+\subsection{Building, Testing and Installing}
+
+Once configured the build process is simply a matter of invoking the appropriate
+\verb!make! command for your platform from the top level source directory. On most
+platforms this is simply \verb!make!. For Windows VisualStudio this is called
+\verb!nmake! (replace \verb!make! with \verb!nmake! in the examples below for that
+platform).
+
+\begin{verbatim}
+$ make
+\end{verbatim}
+
+Assuming the build was successful then you can (optionally) invoke the OpenSSL
+self-tests. This runs a large number of tests (which may take some time) to
+verify that OpenSSL is operating as expected:
+
+\begin{verbatim}
+$ make test
+\end{verbatim}
+
+To install OpenSSL you use the following command:
+
+\begin{verbatim}
+$ make install
+\end{verbatim}
+
+This will copy all the OpenSSL files to the installation directory. Frequently
+(on Linux/Unix) the user building OpenSSL does not have the relevant permissions
+to install to the target directory, so you may need to perform this step as a
+different user. For example:
+
+\begin{verbatim}
+$ sudo make install
+\end{verbatim}
+
+By default on Linux/Unix OpenSSL will install to \verb!/usr/local!. On
+Windows the default is \verb!C:\Program Files\Common Files\SSL! or \\
+\verb!C:\Program Files (x86)\Common Files\SSL!. This default can be changed
+using the \verb!--prefix! option to \verb!Configure!.
+
+\subsection{Building from Git}
+
+Sometimes you may want to use an unreleased version of OpenSSL. For example
+maybe you want to use the latest development version of the code in order for your
+application to use some as yet unreleased feature. Or perhaps you have
+encountered a bug that has been fixed by the OpenSSL development team but is not
+yet in an official OpenSSL release.
+
+In order to do this you will have to obtain the code for OpenSSL directly from
+the source code management system (\verb!git!), rather than downloading it from
+the downloads page. Warning: unreleased versions of OpenSSL are not suitable for
+use in production environments. Development versions of the code are liable to
+break from time to time. Importantly any security issues that are discovered in
+development code which do not affect official releases (e.g. because they only
+affect newly added or changed code) will just be fixed. These security issues
+will not be advertised in any official project Security Advisories.
+
+To obtain an unreleased version of OpenSSL you must first install \verb!git!.
+This is available in most package managers for Linux, or directly from the
+website for other platforms (\url{https://git-scm.com/}). Once installed you
+can obtain the latest code through the following commands:
+
+\begin{verbatim}
+$ git clone git://git.openssl.org/openssl.git
+$ cd openssl
+\end{verbatim}
+
+This will copy the latest OpenSSL code into the \verb!openssl! directory.
+OpenSSL is primarily developed on the Linux platform. Therefore, all of the
+source files use "Unix" style line endings. On the Windows platform you should
+set git to use the correct line endings style:
+
+\begin{verbatim}
+$ git config core.autocrlf false
+$ git config core.eol lf
+$ git checkout .
+\end{verbatim}
+
+\verb!git! organises the source code into ``branches''. Each major version of
+OpenSSL is in a separate branch. The default ``master'' branch contains the
+newest, as yet unreleased, version of OpenSSL. To get the latest unreleased
+fixes for OpenSSL 1.1.0 you should checkout that branch:
+
+\begin{verbatim}
+$ git checkout OpenSSL_1_1_0-stable
+\end{verbatim}
+
+Once the correct branch has been checked out, building OpenSSL from git is the
+same as building from a downloaded archive file.
+
+\section{Troubleshooting}
+
+Sometimes things will go wrong during compilation and/or installation of
+OpenSSL. Usually problems are caused by some environmental issue. In particular
+carefully review the content of section \ref{sec:getting-prereq}. Some common
+problems and their causes are listed below. If that still doesn't help for you
+then you can send a question to the \verb!openssl-users! email list asking for
+help (see \url{https://mta.openssl.org} for details). There are many very
+experienced OpenSSL users on that list who may be able to help you.
+
+\subsection{NASM not found}
+
+Running \verb!Configure! results in the following error message:
+
+\begin{verbatim}
+NASM not found - please read INSTALL and NOTES.WIN for further details
+\end{verbatim}
+
+On Windows it is a pre-requisite that you have the NASM assembler installed (see
+section \ref{sec:getting-prereq-assem}). If you have already installed NASM and
+are still getting this error then, most likely, you have forgotten to update
+your \%PATH\% environment variable to include the location of the NASM
+executable. Update the \%PATH\% environment variable and then restart your
+developer command prompt to pick up the change.
+
+\subsection{Perl implementation doesn't support the right type of paths}
+
+There are two variants of this error message. One where the Perl implementation
+doesn't support Windows like paths:
+
+\begin{verbatim}
+This perl implementation doesn't produce Windows like paths (with backward
+slash directory separators).  Please use an implementation that matches your
+building platform.
+\end{verbatim}
+
+And another where the Perl implementation doesn't support Unix like paths:
+
+\begin{verbatim}
+This perl implementation doesn't produce Unix like paths (with forward slash
+directory separators).  Please use an implementation that matches your
+building platform.
+\end{verbatim}
+
+The former is caused by attempting to use MSYS2 perl (or some other similar perl
+implementation) that expects paths to have forward slash directory separators to
+perform a VisualStudio build. Change to a suitable perl implementation, and
+ensure that perl implementation exists on your \%PATH\% environment variable
+before any other version of perl you may have installed. See section
+\ref{sec:getting-prereq-perl}.
+
+The latter is caused by attempting to use some generic Windows perl
+implementation in an MSYS2 build. For an MSYS2 build you must use the MSYS2
+version of perl. See section \ref{sec:getting-prereq-perl}.
+
+\subsection{Module machine type conflicts with target machine type}
+
+During the build stage you encounter this error:
+
+\begin{verbatim}
+crypto\aes\aes_cfb.obj : fatal error LNK1112: module machine type 'x64' conflict
+s with target machine type 'X86'
+NMAKE : fatal error U1077: 'link' : return code '0x1'
+Stop.
+NMAKE : fatal error U1077: '"C:\Program Files (x86)\Microsoft Visual Studio 12.0
+\VC\BIN\amd64\nmake.exe"' : return code '0x2'
+Stop.
+\end{verbatim}
+
+This is caused by configuring OpenSSL for the \verb!VC-WIN32! target but
+attempting to build it from a 64-bit Developer Command Prompt. Either change the
+target to a 64-bit one (\verb!VC-WIN64A!) or use the 32-bit Developer Command
+Prompt instead.
+
+A similar version of this error can occur if OpenSSL is configured for a 64-bit
+build but you are attempting to build it from a 32-bit Developer Command Prompt.
+
+\begin{verbatim}
+crypto\aes\aes_cfb.obj : fatal error LNK1112: module machine type 'X86' conflict
+s with target machine type 'x64'
+NMAKE : fatal error U1077: 'link' : return code '0x1'
+Stop.
+NMAKE : fatal error U1077: '"C:\Program Files (x86)\Microsoft Visual Studio 12.0
+\VC\BIN\nmake.exe"' : return code '0x2'
+Stop.
+\end{verbatim}
+
