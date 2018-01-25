@@ -5,8 +5,8 @@ protocol was standardised by the IETF\footnote{The Internet Engineering Task
 Force or IETF, is an organisation that publishes many of the standards relevant 
 to SSL/TLS. The standards are published in the form of documents known as RFCs. 
 The most significant of these from our perspective are RFC6101 (SSL3.0), 
-RFC2246 (TLS1.0), RFC4346 (TLS1.1) and RFC5246 (TLS1.2)} and was renamed to TLS 
-(Transport Layer Security).
+RFC2246 (TLS1.0), RFC4346 (TLS1.1), RFC5246 (TLS1.2) and RFCXXX (TLS1.3)} and
+was renamed to TLS (Transport Layer Security).
 
 The purpose of SSL/TLS is to secure the communications between two parties. The
 initiating  party is known as the ``client'' and the responding party is known
@@ -83,19 +83,23 @@ Dependant on the type of certificate ordered, other checks may also be
 performed to verify the identity of the server operator. Finally the CA will 
 issue the certificate which itself will be digitally signed by the CA.
 
+Some cloud computing platforms provide the capability to generate a private key
+and a CA issued certificate in a single operation as part of the cloud service.
+
 Both the digital certificate, and the associated private key are installed on 
 the SSL/TLS server. When a client accesses the server, the server will send 
 its certificate back to the client. In order for authentication to be
-successful the client must verify two things:
+successful the client must verify three things:
 \begin{enumerate}
 \item The certificate provided by the server is valid and issued by a CA that 
 the client trusts.
+\item The domain name of the server matches the one given in the certificate.
 \item The server has the private key corresponding to the public key published 
 in the certificate.
 \end{enumerate}
 
 Part of the role of the SSL/TLS protocol is to enable the client to perform the 
-above checks during the establishment of a connection. If either of these 
+above checks during the establishment of a connection. If any of these
 checks fail then the connection will fail.
 
 As mentioned above it is also possible for the server to authenticate the 
