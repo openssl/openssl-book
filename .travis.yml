@@ -1,0 +1,17 @@
+sudo: required
+dist: trusty
+before_install:
+- sudo apt-get -qq update
+- sudo apt-get install -q -y texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra
+script:
+- make
+- mkdir build
+- cp openssl-book.pdf build
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
+  keep-history: true
+  local-dir: build
+  on:
+    branch: master

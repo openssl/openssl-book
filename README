@@ -23,6 +23,9 @@ contain content that should enable the reader to get to a level of familiarity
 with OpenSSL that they can then use the other documentation sources (such as the
 man pages) to find detailed information as required.
 
+The latest draft of the book is available at:
+https://openssl.github.io/openssl-book/openssl-book.pdf
+
 NOTE: This is a very initial draft and there is no content in the guide yet!
 
 Building the OpenSSL Guide
