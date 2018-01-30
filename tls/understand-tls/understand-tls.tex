@@ -41,6 +41,8 @@ is the support for \emph{extensions}.
 \item TLS 1.1. Published in 2006 this provided a number of security tweaks.
 \item TLS 1.2. Published in 2008 this version provided some significant changes
 including  support for authenticated encryption ciphers.
+\item TLS 1.3. Yet to be published. This version is a major rewrite of the
+specification with very significant differences to earlier versions.
 \end{itemize}
 
 The protocol provides the capability for the two parties to negotiate between 
@@ -275,10 +277,38 @@ There are quite a few different messages possible and not all messages will
 always be sent. Some messages are optional and may depend on the ciphersuite 
 chosen; whether the client is required to provide a certificate; etc. The 
 handshake shown in figure \ref{fig:typical-hand} is an example of a full 
-handshake. Once a client has completed its first handshake with a server it can 
-usually reuse the cryptographic parameters negotiated so that it does not need 
-to go through a second or subsequent full handshake. Instead it performs an 
-\emph{abbreviated handshake} and reuses the previously negotiated parameters. 
-This is called \emph{session resumption}. A server may refuse to resume a 
-session (for example if the session on the server has expired), in which case a 
-full handshake will occur.
+handshake. 
+
+\section{Sessions and Resumption}
+
+Performing the initial handshake can be quite costly both in terms of time and
+resources. In many cases a client will need to create multiple repeated
+connections to a server over a period of time. For example, consider the case
+where a web browser visits a web page secured by SSL/TLS. After some time the
+user may click on a link to visit a different page on the same site which might
+result in a new SSL/TLS connection being made. In order to reduce the cost of
+such repeated connections SSL/TLS has a capability known as \emph{sessions}. A
+session is a set of saved cryptographic parameters that were negotiated during
+an earlier connection.
+
+Once a client has completed its first handshake with a server it will save
+away its session data. On a subsequent connection the client will attempt to
+perform an \emph{abbreviated handshake} that reuses the previously negotiated
+parameters.  This is called \emph{session resumption}. A server may refuse to
+resume a session (for example if the session on the server has expired), in
+which case a full handshake will occur.
+
+\section{Key Updates and Renegotiation}
+
+If cryptographic keys are used to protect a large amount of data then it may
+become necessary to replace them with newer keys. TLS 1.3 introduces a new
+capability to update keys after a period of time without having to perform a new
+handshake. Either peer can send to the other party a KeyUpdate message
+indicating that they are updating their keys. This message can include a request
+for a reciprocal update of the other parties keys too.
+
+In SSL/TLS versions before 1.3 there is no KeyUpdate message. An alternative is
+to perform a \emph{renegotiation}. This is a new handshake on an already
+existing connection. The new handshake can be full, or it could be abbreviated
+using previously saved session information (such as from the original
+handshake). A renegotiation handshake is not allowed in TLS 1.3.
