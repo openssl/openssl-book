@@ -311,4 +311,10 @@ In SSL/TLS versions before 1.3 there is no KeyUpdate message. An alternative is
 to perform a \emph{renegotiation}. This is a new handshake on an already
 existing connection. The new handshake can be full, or it could be abbreviated
 using previously saved session information (such as from the original
-handshake). A renegotiation handshake is not allowed in TLS 1.3.
+handshake).
+
+There have been historic security issues with renegotiation, and for that
+reason, a renegotiation handshake is not allowed in TLS 1.3. Note that a
+renegotiation handshake has another use besides updating keys. It can also
+be used to force a client authentication. In TLS 1.3 this can be achieved by
+sending a post-handshake CertificateRequest message.
