@@ -6,7 +6,7 @@ Force or IETF, is an organisation that publishes many of the standards relevant
 to SSL/TLS. The standards are published in the form of documents known as RFCs. 
 The most significant of these from our perspective are RFC6101 (SSL3.0), 
 RFC2246 (TLS1.0), RFC4346 (TLS1.1), RFC5246 (TLS1.2) and RFCXXX (TLS1.3)} and
-was renamed to TLS (Transport Layer Security).
+was renamed to TLS (Transport Layer Security) in 1999.
 
 The purpose of SSL/TLS is to secure the communications between two parties. The
 initiating  party is known as the ``client'' and the responding party is known
@@ -313,8 +313,9 @@ existing connection. The new handshake can be full, or it could be abbreviated
 using previously saved session information (such as from the original
 handshake).
 
-There have been historic security issues with renegotiation, and for that
-reason, a renegotiation handshake is not allowed in TLS 1.3. Note that a
-renegotiation handshake has another use besides updating keys. It can also
-be used to force a client authentication. In TLS 1.3 this can be achieved by
-sending a post-handshake CertificateRequest message.
+There have been historic security issues with renegotiation\footnote{For example
+see the description of the attack in RFC5746} and, for that reason, a
+renegotiation handshake is not allowed in TLS 1.3. Note that a renegotiation
+handshake has another use besides updating keys. It can also be used to force a
+client authentication. In TLS 1.3 this can be achieved by sending a
+post-handshake CertificateRequest message.
