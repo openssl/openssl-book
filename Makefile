@@ -9,7 +9,9 @@ CFLAGS= -I$(OSSLDIR)/include -L$(OSSLDIR)/lib -g -lcrypto -lssl
 #No exe's to build yet
 EXE=
 
-BOOKELEMS= openssl-book.tex
+BOOKELEMS= openssl-book.tex \
+	foundations/about/about.tex \
+	tls/understand-tls/understand-tls.tex
 
 all: openssl-book.pdf
 
